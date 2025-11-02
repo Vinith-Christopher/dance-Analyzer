@@ -1,38 +1,30 @@
-# Dockerfile
 FROM python:3.12.0-slim
+
+# Your existing RUN commands...
+
+# Create non-root user
+RUN useradd -m -u 1000 appuser && \
+    mkdir -p /app/uploads /app/processed && \
+    chown -R appuser:appuser /app
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies for OpenCV and MediaPipe
-RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender-dev \
-    libgomp1 \
-    libgstreamer1.0-0 \
-    libgstreamer-plugins-base1.0-0 \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements file
+# Copy requirements and install
 COPY requirements.txt .
-
-# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY main.py .
+COPY . .
 
-# Copy templates directory
-COPY templates/ ./templates/
+# Change ownership of all files
+RUN chown -R appuser:appuser /app
 
-# Create directories for uploads and processed videos
-RUN mkdir -p uploads processed
+# Switch to non-root user
+USER appuser
 
 # Expose port
 EXPOSE 8000
 
-# Run the application
+# Run application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
