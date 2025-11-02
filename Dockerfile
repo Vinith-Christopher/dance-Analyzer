@@ -14,8 +14,6 @@ RUN apt-get update && apt-get install -y \
     libgomp1 \
     libgstreamer1.0-0 \
     libgstreamer-plugins-base1.0-0 \
-    gstreamer1.0-tools \
-    gstreamer1.0-libav \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements file
