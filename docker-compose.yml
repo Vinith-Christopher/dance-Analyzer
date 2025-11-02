@@ -2,7 +2,9 @@ version: '3.9'
 
 services:
   dance-analyzer:
-    build: .
+    build: 
+      context: .
+      network: host
     container_name: dance-skeleton-analyzer
     ports:
       - "8000:8000"
@@ -14,6 +16,11 @@ services:
       # - ./templates:/app/templates
     environment:
       - PYTHONUNBUFFERED=1
+    # Add DNS servers
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
     restart: unless-stopped
     # Optional: Set resource limits
     deploy:
