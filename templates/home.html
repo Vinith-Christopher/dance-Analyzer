@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Dance Skeleton Analyzer</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+            }
+            .container {
+                background: white;
+                border-radius: 15px;
+                padding: 30px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            }
+            h1 {
+                color: #667eea;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            .subtitle {
+                text-align: center;
+                color: #666;
+                margin-bottom: 30px;
+            }
+            .upload-section {
+                background: #f8f9fa;
+                padding: 30px;
+                border-radius: 10px;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+            input[type="file"] {
+                display: none;
+            }
+            .file-label {
+                display: inline-block;
+                padding: 12px 30px;
+                background: #667eea;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background 0.3s;
+            }
+            .file-label:hover {
+                background: #5568d3;
+            }
+            button {
+                padding: 12px 40px;
+                background: #764ba2;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+                margin-top: 15px;
+                transition: background 0.3s;
+            }
+            button:hover {
+                background: #653a8a;
+            }
+            button:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+            }
+            .video-container {
+                margin-top: 30px;
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 10px;
+            }
+            .video-container h3 {
+                margin-top: 0;
+                color: #333;
+                text-align: center;
+            }
+            video {
+                width: 100%;
+                border-radius: 8px;
+                background: #000;
+            }
+            .status {
+                text-align: center;
+                margin: 20px 0;
+                padding: 15px;
+                border-radius: 5px;
+                display: none;
+            }
+            .status.success {
+                background: #d4edda;
+                color: #155724;
+                display: block;
+            }
+            .status.error {
+                background: #f8d7da;
+                color: #721c24;
+                display: block;
+            }
+            .status.processing {
+                background: #fff3cd;
+                color: #856404;
+                display: block;
+            }
+            .filename {
+                color: #667eea;
+                margin-top: 10px;
+                font-weight: bold;
+            }
+            .spinner {
+                border: 3px solid #f3f3f3;
+                border-top: 3px solid #667eea;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                animation: spin 1s linear infinite;
+                margin: 10px auto;
+                display: none;
+            }
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            .info-text {
+                text-align: center;
+                color: #666;
+                margin-top: 10px;
+                font-size: 14px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>💃 Dance Skeleton Analyzer</h1>
+            <p class="subtitle">Upload a dance video to see AI-powered skeleton tracking</p>
+            
+            <div class="upload-section">
+                <label for="videoFile" class="file-label">
+                    📹 Choose Dance Video
+                </label>
+                <input type="file" id="videoFile" accept="video/*">
+                <div class="filename" id="filename"></div>
+                <br>
+                <button id="uploadBtn" onclick="uploadVideo()" disabled>
+                    🚀 Process Video
+                </button>
+                <div class="spinner" id="spinner"></div>
+            </div>
+
+            <div class="status" id="status"></div>
+
+            <div class="video-container" id="videoContainer" style="display: none;">
+                <h3>🎬 Side-by-Side Comparison</h3>
+                <p class="info-text">Original (Left) | Skeleton Detection (Right)</p>
+                <video id="processedVideo" controls></video>
+            </div>
+        </div>
+
+        <script>
+            const fileInput = document.getElementById('videoFile');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const filename = document.getElementById('filename');
+            const status = document.getElementById('status');
+            const spinner = document.getElementById('spinner');
+            const videoContainer = document.getElementById('videoContainer');
+            const processedVideo = document.getElementById('processedVideo');
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    filename.textContent = `Selected: ${e.target.files[0].name}`;
+                    uploadBtn.disabled = false;
+                } else {
+                    filename.textContent = '';
+                    uploadBtn.disabled = true;
+                }
+            });
+
+            async function uploadVideo() {
+                const file = fileInput.files[0];
+                if (!file) return;
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                uploadBtn.disabled = true;
+                spinner.style.display = 'block';
+                showStatus('processing', '⏳ Processing video... This may take a few minutes.');
+                videoContainer.style.display = 'none';
+
+                try {
+                    const response = await fetch('/process', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        showStatus('success', `✅ Success! Processed ${data.info.processed_frames} frames`);
+                        
+                        setTimeout(() => {
+                            processedVideo.src = '/' + data.output_path + '?v=' + Date.now();
+                            videoContainer.style.display = 'block';
+                        }, 500);
+                    } else {
+                        showStatus('error', `❌ Error: ${data.detail}`);
+                    }
+                } catch (error) {
+                    showStatus('error', `❌ Error: ${error.message}`);
+                } finally {
+                    uploadBtn.disabled = false;
+                    spinner.style.display = 'none';
+                }
+            }
+
+            function showStatus(type, message) {
+                status.className = `status ${type}`;
+                status.textContent = message;
+            }
+        </script>
+    </body>
+    </html>

@@ -1,0 +1,9 @@
+fastapi==0.120.4
+mediapipe==0.10.21
+numpy==1.26.4
+opencv_contrib_python==4.11.0.86
+# opencv_python==4.12.0.88
+opencv-python==4.9.0.80
+uvicorn==0.38.0
+jinja2==3.1.4
+python-multipart
