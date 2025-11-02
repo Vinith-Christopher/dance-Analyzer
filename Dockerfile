@@ -5,7 +5,20 @@ FROM python:3.12.0-slim
 WORKDIR /app
 
 # Install system dependencies for OpenCV and MediaPipe
-RUN apt-get update && apt-get install -y \
+# RUN apt-get update && apt-get install -y \
+#     libgl1-mesa-glx \
+#     libglib2.0-0 \
+#     libsm6 \
+#     libxext6 \
+#     libxrender-dev \
+#     libgomp1 \
+#     libgstreamer1.0-0 \
+#     libgstreamer-plugins-base1.0-0 \
+#     && rm -rf /var/lib/apt/lists/*
+
+RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf && \
+    apt-get update && \
+    apt-get install -y \
     libgl1-mesa-glx \
     libglib2.0-0 \
     libsm6 \
