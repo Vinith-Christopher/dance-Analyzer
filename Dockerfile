@@ -1,6 +1,14 @@
 FROM python:3.12.0-slim
 
-# Your existing RUN commands...
+# Install OpenCV dependencies BEFORE creating user
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
 RUN useradd -m -u 1000 appuser && \
