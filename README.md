@@ -531,13 +531,13 @@ For issues, questions, or suggestions:
 ## 📸 Screenshots
 
 ### Upload Interface
-![Upload Interface](docs/screenshots/upload.png)
+![Upload Interface](Screenshots\Interface.png)
 
 ### Processing in Progress
-![Processing](docs/screenshots/processing.png)
+![Processing](Screenshots\Processing.png)
 
 ### Side-by-Side Result
-![Result](docs/screenshots/result.png)
+![Result](Screenshots\Sidebyside_out.png)
 
 ---
 
