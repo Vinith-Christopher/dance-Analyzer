@@ -514,8 +514,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 For issues, questions, or suggestions:
 - Open an issue on GitHub
-- Email: your-email@example.com
-- Documentation: [Wiki](https://github.com/yourusername/dance-skeleton-analyzer/wiki)
+- Email: vinithkishore333@gmail.com
 
 ## 🗺️ Roadmap
 
@@ -528,16 +527,6 @@ For issues, questions, or suggestions:
 - [ ] Comparison mode for two dancers
 - [ ] Mobile app version
 
-## 📸 Screenshots
-
-### Upload Interface
-![Upload Interface](Screenshots\Interface.png)
-
-### Processing in Progress
-![Processing](Screenshots\Processing.png)
-
-### Side-by-Side Result
-![Result](Screenshots\Sidebyside_out.png)
 
 ---
 
